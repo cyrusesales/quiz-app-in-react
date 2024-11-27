@@ -1,8 +1,15 @@
 import Header from "./components/Header.jsx";
+import Quiz from "./components/Quiz.jsx"
 
 function App() {
     return (
-        <Header />
+        <>{/*Fragment Component */}
+            <Header />
+            <main>
+                <Quiz />
+            </main>
+        </>
+        
     );
 }
 
