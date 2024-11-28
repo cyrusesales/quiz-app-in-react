@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import QUESTIONS from '../questions.js'
+import QuestionTimer from './QuestionTimer.jsx';
 import quizCompleteImg from '../assets/quiz-complete.png';
 
 export default function Quiz() {
@@ -50,7 +51,9 @@ export default function Quiz() {
     return (
         <div id="quiz">
             <div id="question">
-            {/*output the questions, access the active question index, then text property*/}
+                {/* onTimeout once timer expire, execute handleSelectAnswer but has null so add new entry, placeholder for no answer */}
+                <QuestionTimer timeout={10000} onTimeout={() => handleSelectAnswer(null)}/>
+                {/*output the questions, access the active question index, then text property*/}
                 <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
                 <ul id="answers">
                     {/*output the possible answer, map list of answer to list of JSX components*/}
