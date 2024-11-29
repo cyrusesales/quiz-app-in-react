@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import QUESTIONS from '../questions.js'
 import QuestionTimer from './QuestionTimer.jsx';
@@ -16,7 +16,8 @@ export default function Quiz() {
     const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
 
     //add func trigger when button is press
-    function handleSelectAnswer(selectedAnswer) {
+    // dont have dependecy, not user state or props
+    const handleSelectAnswer = useCallback(function handleSelectAnswer(selectedAnswer) {
         //store the selected answer in user array
         // update the user answer state
         // update the func form, bec wanna update the state based on prev state
@@ -24,7 +25,11 @@ export default function Quiz() {
             //return spread existing user answer but append prev answer
             return [...prevUserAnswer, selectedAnswer];
         });
-    }
+    }, []);
+
+    //happen if timer expired, useCallback need dependecy that list depedency might use
+    //handleSelectAnswer depends on props and state
+    const handleSkipAnswer = useCallback(() => handleSelectAnswer(null), [handleSelectAnswer]);
 
     //display diff content if quiz is over
     if (quizIsComplete) {
@@ -51,8 +56,12 @@ export default function Quiz() {
     return (
         <div id="quiz">
             <div id="question">
-                {/* onTimeout once timer expire, execute handleSelectAnswer but has null so add new entry, placeholder for no answer */}
-                <QuestionTimer timeout={10000} onTimeout={() => handleSelectAnswer(null)}/>
+                {/* onTimeout once timer expire, execute handleSelectAnswer but has null so add new entry, placeholder for no answer
+                when func created, it is new obj in memory, everytime reevaluated*/}
+                <QuestionTimer 
+                    timeout={10000} 
+                    onTimeout={handleSkipAnswer}
+                />
                 {/*output the questions, access the active question index, then text property*/}
                 <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
                 <ul id="answers">

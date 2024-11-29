@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 export default function QuestionTimer({ timeout, onTimeout }) {
     //initial is timeout bec remaining time
-    const [remainingTime, setRemainingTime] = useState();
+    const [remainingTime, setRemainingTime] = useState(timeout);
         
     //set timer that expire after some time
     //how much time should expire
@@ -13,7 +13,9 @@ export default function QuestionTimer({ timeout, onTimeout }) {
     // add useEffect
     // need dependecy, 2 props , timeout and onTimeout
     // make sure re executed once 1 of the dependecy changes
+    //execute again if dependency value change
     useEffect(() => {
+        console.log('SETTING TIMEOUT');
         setTimeout(onTimeout, timeout);
     }, [timeout, onTimeout]);
 
@@ -21,10 +23,11 @@ export default function QuestionTimer({ timeout, onTimeout }) {
     //to avoid infinite loop, make sure not executed all the time
     //no dependency, neither using props and state values in this effect value
     useEffect(() => {
-        //update every 100 millisecs, this func should execute
+        console.log('SETTING INTERVAL');
+        //update every 100 millisecs, this func should execute, less and less as time expires
         setInterval(() => {
-            setRemainingTime(prevRemainingTime => prevRemainingTime - 100);
-        });
+            setRemainingTime((prevRemainingTime) => prevRemainingTime - 100);
+        }, 100);
     }, []); 
 
 
