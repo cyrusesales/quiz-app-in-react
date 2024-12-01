@@ -16,7 +16,12 @@ export default function QuestionTimer({ timeout, onTimeout }) {
     //execute again if dependency value change
     useEffect(() => {
         console.log('SETTING TIMEOUT');
-        setTimeout(onTimeout, timeout);
+        const timer = setTimeout(onTimeout, timeout);
+
+        //cleanup function
+        return () => {
+            clearTimeout(timer);
+        };
     }, [timeout, onTimeout]);
 
 
@@ -25,9 +30,15 @@ export default function QuestionTimer({ timeout, onTimeout }) {
     useEffect(() => {
         console.log('SETTING INTERVAL');
         //update every 100 millisecs, this func should execute, less and less as time expires
-        setInterval(() => {
+        const interval = setInterval(() => {
             setRemainingTime((prevRemainingTime) => prevRemainingTime - 100);
         }, 100);
+
+        //cleanup function
+        //auto run my react before it runs again or disappear from screen
+        return () => {
+            clearInterval(interval);
+        };
     }, []); 
 
 

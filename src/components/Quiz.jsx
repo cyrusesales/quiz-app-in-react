@@ -58,7 +58,10 @@ export default function Quiz() {
             <div id="question">
                 {/* onTimeout once timer expire, execute handleSelectAnswer but has null so add new entry, placeholder for no answer
                 when func created, it is new obj in memory, everytime reevaluated*/}
+                {/*QuestionTImer not change, need to be reset , add "key" bec can added to element and component, should use this key outputting data, 
+                key whenever changes, react destroy and create new one*/}
                 <QuestionTimer 
+                    key={activeQuestionIndex}
                     timeout={10000} 
                     onTimeout={handleSkipAnswer}
                 />
