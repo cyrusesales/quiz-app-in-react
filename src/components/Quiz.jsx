@@ -1,12 +1,11 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 
 import QUESTIONS from '../questions.js'
-import QuestionTimer from './QuestionTimer.jsx';
 import quizCompleteImg from '../assets/quiz-complete.png';
+import Question from './Question.jsx';
 
 export default function Quiz() {
-    //to manage value will not chnage if component func execute again
-    const shuffledAnswers = useRef();
+
 
     const [answerState, setAnswerState] = useState('');
 
@@ -71,38 +70,23 @@ export default function Quiz() {
         );
     }
 
-    //check if shuffled answer current is undefined
-    if (!shuffledAnswers.current) {
-        //----------only execute if we still have questions to display
-        //spread questions into this array, created new array so dont edit the original answer array
-        shuffledAnswers.current = [...QUESTIONS[activeQuestionIndex].answers];
-        
-        //use shuffle and call built in sort, will no return new array, instead added array, creating a new copy by creating sort
-        //then take a fucntion , always receive two elements from array, if negative those element will swap and if positive, they stay in the order
-        // pair by pair to derive a new order
-        // want to shuffle the order here,
-        //Math random give us a value between 0 and 1 and with 0.5, will end up negative value in 50 or 100 cases or with the negative value
-        shuffledAnswers.current.sort(() => Math.random() - 0.5);
-    }
+    
     
 
     
     return (
         <div id="quiz">
-            <div id="question">
-                {/* onTimeout once timer expire, execute handleSelectAnswer but has null so add new entry, placeholder for no answer
-                when func created, it is new obj in memory, everytime reevaluated*/}
-                {/*QuestionTImer not change, need to be reset , add "key" bec can added to element and component, should use this key outputting data, 
-                key whenever changes, react destroy and create new one*/}
-                <QuestionTimer 
-                    key={activeQuestionIndex}
-                    timeout={10000} 
-                    onTimeout={handleSkipAnswer}
-                />
-                {/*output the questions, access the active question index, then text property*/}
-                <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
-                
-            </div>
+            {/* key = will force react to destroy and recreate component */}
+            {/* key = use single key bec this is the entire question*/}
+            <Question 
+                key={activeQuestionIndex}
+                questionText={QUESTIONS[activeQuestionIndex].text} 
+                answers={QUESTIONS[activeQuestionIndex].answers}
+                answerState={answerState}
+                selectedAnswer={userAnswers[userAnswers.length - 1]}
+                onSelectAnswer={handleSelectAnswer}
+                onSkipAnswer={handleSkipAnswer}
+            />
         </div>
     );
 }
