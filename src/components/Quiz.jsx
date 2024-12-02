@@ -1,14 +1,19 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 import QUESTIONS from '../questions.js'
 import QuestionTimer from './QuestionTimer.jsx';
 import quizCompleteImg from '../assets/quiz-complete.png';
 
 export default function Quiz() {
+    //to manage value will not chnage if component func execute again
+    const shuffledAnswers = useRef();
+
     const [answerState, setAnswerState] = useState('');
 
     // register the answer selected by users, want to store picked by user
     const [userAnswers, setUserAnswers] = useState([]);
+
+    //shuffeled answer state, initial empty array then useEffect hook gets only update when execute for first time
 
     //if useState is empty array, activeQuestionIndex is zero
     //make sure active question index if current answer state is empty string
@@ -66,16 +71,20 @@ export default function Quiz() {
         );
     }
 
-    //----------only execute if we still have questions to display
-     //spread questions into this array, created new array so dont edit the original answer array
-    const shuffledAnswers = [...QUESTIONS[activeQuestionIndex].answers];
+    //check if shuffled answer current is undefined
+    if (!shuffledAnswers.current) {
+        //----------only execute if we still have questions to display
+        //spread questions into this array, created new array so dont edit the original answer array
+        shuffledAnswers.current = [...QUESTIONS[activeQuestionIndex].answers];
+        
+        //use shuffle and call built in sort, will no return new array, instead added array, creating a new copy by creating sort
+        //then take a fucntion , always receive two elements from array, if negative those element will swap and if positive, they stay in the order
+        // pair by pair to derive a new order
+        // want to shuffle the order here,
+        //Math random give us a value between 0 and 1 and with 0.5, will end up negative value in 50 or 100 cases or with the negative value
+        shuffledAnswers.current.sort(() => Math.random() - 0.5);
+    }
     
-     //use shuffle and call built in sort, will no return new array, instead added array, creating a new copy by creating sort
-     //then take a fucntion , always receive two elements from array, if negative those element will swap and if positive, they stay in the order
-     // pair by pair to derive a new order
-     // want to shuffle the order here,
-     //Math random give us a value between 0 and 1 and with 0.5, will end up negative value in 50 or 100 cases or with the negative value
-    shuffledAnswers.sort(() => Math.random() - 0.5);
 
     
     return (
@@ -92,40 +101,7 @@ export default function Quiz() {
                 />
                 {/*output the questions, access the active question index, then text property*/}
                 <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
-                <ul id="answers">
-                    {/*output the possible answer, map list of answer to list of JSX components*/}
-                    {shuffledAnswers.map((answer) => {
-                            //look userAnswers.length minus 1
-                            const isSelected = userAnswers[userAnswers.length - 1] === answer;
-                            let cssClass = '';
-
-                            //check if answerState is equal to answered, also taking look userAnswer
-                            if (answerState === 'answered' && isSelected) {
-                                cssClass = 'selected';
-                            }
-
-                            if ((answerState === 'correct' || answerState === 'wrong') && isSelected) {
-                                cssClass = answerState;
-                            }
-
-                            return (
-                                <li key={answer} className="answer">
-                                {/*
-                                //output button should be selectable
-                                //wrap anonymous function so we have more control over handleSelectAnswer will envoke, pass the answer here, not executed immediately
-                                //custom func executed
-                                */}
-                                    <button 
-                                        onClick={() => handleSelectAnswer(answer)} 
-                                        className={cssClass}
-                                    >
-                                        {answer}
-                                    </button>
-                                </li>
-                            );
-                        } 
-                    )}
-                </ul>
+                
             </div>
         </div>
     );
