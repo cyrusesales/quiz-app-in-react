@@ -41,10 +41,13 @@ export default function Answer({answers, selectedAnswer, answerState, onSelect})
                         //output button should be selectable
                         //wrap anonymous function so we have more control over handleSelectAnswer will envoke, pass the answer here, not executed immediately
                         //custom func executed
+                        //cant move to those questions quickly
+                        //disable if answerState is not equal to empty string
                         */}
                             <button 
                                 onClick={() => onSelect(answer)} 
                                 className={cssClass}
+                                disabled={answerState !== ''}
                             >
                                 {answer}
                             </button>
