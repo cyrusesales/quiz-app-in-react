@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 
-export default function QuestionTimer({ timeout, onTimeout }) {
+export default function QuestionTimer({ timeout, onTimeout, mode }) {
     //initial is timeout bec remaining time
     const [remainingTime, setRemainingTime] = useState(timeout);
         
@@ -43,7 +43,13 @@ export default function QuestionTimer({ timeout, onTimeout }) {
 
 
     //update the progress bar that execute code every millisecs
+    // mode = progress bar will receive a different color to show user something change
     return (
-        <progress id="question-time" max={timeout} value={remainingTime}/>
+        <progress 
+            id="question-time" 
+            max={timeout} 
+            value={remainingTime} 
+            className={mode}
+        />
     );
 }

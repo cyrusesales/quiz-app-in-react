@@ -11,6 +11,18 @@ export default function Question({index, onSelectAnswer, onSkipAnswer}) {
         isCorrect: null
     });
 
+    {/*maximum time can be when this Question component gets rendered*/}
+    let timer = 10000;
+    {/*when rerendered, I want it to change*/}
+    {/* set 1000 i reveal the correct or right answer */}
+    if(answer.selectedAnswer){
+        timer = 1000;
+    }
+    {/* set 2000 milli time it take until it move to next question */}
+    if (answer.isCorrect !== null){
+        timer = 2000;
+    }
+
     //idea is to have a function handnleSelectAnswer should be trigger and  expect to get my answer text here
     // setAnswer to the new object, isCorrect must be derived after 1 sec
     function handleSelectAnswer(answer) {
@@ -18,6 +30,8 @@ export default function Question({index, onSelectAnswer, onSkipAnswer}) {
             selectedAnswer: answer,
             isCorrect: null
         })
+
+        
 
         {/*true if right answer, false if not, need to know right answer is */}
         {/*access Key to take a look for specific question, then first answer w/c correct answer then compare our answer */}
@@ -52,10 +66,15 @@ export default function Question({index, onSelectAnswer, onSkipAnswer}) {
             when func created, it is new obj in memory, everytime reevaluated*/}
             {/*QuestionTImer not change, need to be reset , add "key" bec can added to element and component, should use this key outputting data, 
             key whenever changes, react destroy and create new one*/}
+            {/* timer is used here , when changes inside timeout in component*/}
+            {/* answerState = will be the answer correct or wrong */}
+            {/* key set timer when change timer value destroy and recreate QuestionTimer component */}
+            {/* onSkipAnswer = whenever timer expires, only want to trigger this func if no answer was selected  */}
             <QuestionTimer 
-
-                timeout={10000} 
-                onTimeout={onSkipAnswer}
+                key={timer}
+                timeout={timer} 
+                onTimeout={answer.selectedAnswer === '' ? onSkipAnswer : null}
+                mode={answerState}
             />
             {/*output the questions, access the active question index, then text property*/}
             <h2>{QUESTIONS[index].text}</h2>
